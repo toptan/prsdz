@@ -1,3 +1,11 @@
+# Omit build directory
+build/
+
+# Backup files
+*~
+*.bak
+*.bkp
+
 # Compiled Object files
 *.slo
 *.lo
