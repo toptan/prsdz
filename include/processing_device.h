@@ -16,17 +16,25 @@ class processing_device : public device {
     explicit processing_device(long avg_processing_time, const std::string &name);
 
     /// \brief Destruktor.
-    virtual ~device();
+    virtual ~processing_device();
 
     /// \brief Vraća da li je uređaj "pun", tj. da li već ima posao i vrši obradu.
     ///
     /// \return \code true ako uređaj već vrši obradu.
     virtual bool full() const override { return m_job != nullptr; }
 
+    /// \brief Vraća preostalo vreme obrade tekućeg posla u mikrosekundama.
+    ///
+    /// \return preostalo vreme obrade tekućeg posla u mikrosekundama.
+    virtual long processing_time() const override { return m_processing_time; }
+
     /// \brief Dodaje novi posao uređaju.
     ///
     /// \param new_job novi posao.
     virtual void add_job(job *new_job) override;
+
+    /// \copydoc device::time_jump(long)
+    virtual void time_jump(long amount) override;
 
   protected:
     /// \brief Generiše vreme obrade tekućeg posla.

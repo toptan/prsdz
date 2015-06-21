@@ -7,12 +7,12 @@
 // Forward declarations.
 class job;
 
-/// \brief Modelije apstraktni uređaj u sistemu.
+/// \brief Modeluje apstraktni uređaj u sistemu.
 class device {
   public:
     /// \brief Konstruktor.
     ///
-    /// \param avg_processing_time prosečno vreme obrade u mikro sekundama.
+    /// \param avg_processing_time prosečno vreme obrade u mikrosekundama.
     /// \param name naziv uređaja.
     explicit device(long avg_processing_time, const std::string &name);
 
@@ -49,6 +49,18 @@ class device {
     ///
     /// \param job_to_process novi posao.
     virtual void add_job(job *new_job) = 0;
+
+    /// \brief Vrši pomeraj vremena za određeni broj mikro sekundi.
+    /// Ovo vreme se oduzima od \ref m_processing_time i ako je
+    /// rezultat nula onda se posao prebacuje u sledeći uređaj.
+    ///
+    /// \param amount pomeraj.
+    virtual void time_jump(long amount) = 0;
+
+    /// \brief Proverava konzistentnost prelaska.
+    /// Ovaj metod pozvati nakon dodavanje svih sledećih uređaja u lancu.
+    /// Ukoliko suma verovatnoća prelazaka na sledeće uređaje nije 1 baciće se izuzetak.
+    void check_consistency();
 
   protected:
     /// \brief Generiše vreme obrade za dodati posao.

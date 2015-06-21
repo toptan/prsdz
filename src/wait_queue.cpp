@@ -9,3 +9,7 @@ wait_queue::wait_queue(const std::string &name, const std::deque<job *> &jobs)
 wait_queue::~wait_queue() {}
 
 void wait_queue::add_job(job *new_job) { m_jobs.push_back(new_job); }
+
+void wait_queue::time_jump(long amount) {
+    // TODO: Dodaj time jump logiku za red čekanja.
+}

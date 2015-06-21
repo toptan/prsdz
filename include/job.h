@@ -6,6 +6,6 @@
 class job {
   public:
     explicit job() {};
-}
+};
 
 #endif  // _JOB_H_

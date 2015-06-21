@@ -39,6 +39,9 @@ class wait_queue : public device {
     /// \param new_job novi posao.
     virtual void add_job(job *new_job) override;
 
+    /// \copydoc device::time_jump(long)
+    virtual void time_jump(long amount) override;
+
   protected:
     /// \brief Ovaj metod ne radi ništa pošto u redu nema obrade.
     virtual void generate_processing_time() override{};
