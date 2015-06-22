@@ -6,6 +6,7 @@ device::device(long avg_processing_time, const std::string &name)
     : m_avg_processing_time(avg_processing_time),
       m_name(name),
       m_processing_time(0),
+      m_total_work_time(0),
       m_next_devices(),
       m_probabilities(),
       m_ranges() {}

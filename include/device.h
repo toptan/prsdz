@@ -38,7 +38,7 @@ class device {
     /// \brief Vraća preostalo vreme obrade tekućeg posla.
     ///
     /// \return preostalo vreme obrade tekućeg posla.
-    virtual long processing_time() const = 0;
+    virtual long processing_time() const;
 
     /// \brief Dodaje novi uređaj u listu sledećih uređaja.
     ///
@@ -63,6 +63,11 @@ class device {
     /// Ukoliko suma verovatnoća prelazaka na sledeće uređaje nije 1 baciće se izuzetak.
     void check_consistency();
 
+    /// \brief Vraća ukupno vreme koliko je ovaj uređaj radio.
+    ///
+    /// \return Ukupno vreme rada.
+    long total_work_time() const { return m_total_work_time; }
+
   protected:
     /// \brief Generiše vreme obrade za dodati posao.
     virtual void generate_processing_time() = 0;
@@ -71,6 +76,7 @@ class device {
     const long m_avg_processing_time;  //!< Prosečno vreme obrade u mikrosekundama.
     std::string m_name;                //!< Naziv uređaja.
     long m_processing_time;            //!< Preostalo vreme obrade tekućeg posla u mikrosekundama.
+    long m_total_work_time;            //!< Ukupno vreme rada uređaja.
 
     std::vector<device *> m_next_devices;     //!< Sledeći uređaji u lancu.
     std::vector<double> m_probabilities;      //!< Verovatnoće prelaska u sledeći uređaj.

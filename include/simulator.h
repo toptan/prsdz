@@ -14,9 +14,10 @@ class simulator {
   public:
     /// \brief Konstruktor.
     ///
-    /// \param user_discs broj korisničkih diskova.
-    /// \param processes broj procesa (stepen multiprogramiranja).
-    explicit simulator(int number_of_user_discs, int number_of_processes);
+    /// \param user_discs Broj korisničkih diskova.
+    /// \param processes Broj procesa (stepen multiprogramiranja).
+    /// \param simulation_time Trajanje simulacije u minutima.
+    explicit simulator(int number_of_user_discs, int number_of_processes, int simulation_time);
 
     /// \brief Destruktor.
     virtual ~simulator();
@@ -26,6 +27,9 @@ class simulator {
 
     /// \brief Štampa trenutno stanje simulatora.
     void print_stats() const;
+
+    /// \brief Štampa rezultate simulacije.
+    void print_results() const;
 
   private:
     wait_queue *queue_cpu;  //!< Red za čekanje procesora.
@@ -42,6 +46,8 @@ class simulator {
     std::vector<job *> jobs;                      //!< Poslovi.
     std::vector<device *> processing_devices;     //!< Vektor uređaja koji rade obradu.
     std::vector<wait_queue *> wait_queues;        //!< Vektor redova čekanja.
+
+    uint64_t m_simulation_time;  //!< Ukupno vreme simulacije u minutima.
 
   private:
     /// \brief Izvršava jedan korak simulacije i vraća koliko je trajao.

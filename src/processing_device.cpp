@@ -28,7 +28,9 @@ void processing_device::time_jump(long amount) {
                                     " mikrosekundi, a preostalo vreme obrade posla je " +
                                     std::to_string(m_processing_time) + " mikrosekundi.");
     }
-    m_processing_time = m_processing_time - amount;
+    m_processing_time -= amount;
+    m_total_work_time += amount;
+    m_job->time_jump(amount);
     if (m_processing_time == 0.0) {
         double next = drand48();
         for (const auto &range : m_ranges) {

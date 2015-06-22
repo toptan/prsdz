@@ -16,7 +16,9 @@ void wait_queue::add_job(job *new_job) {
 }
 
 void wait_queue::time_jump(long amount) {
-    // Ovde ne radimo ništa pošto red za čekanje nema nikakvu obradu.
+    for (auto job: m_jobs) {
+        job->time_jump(amount);
+    }
 }
 
 void wait_queue::move_jobs() {
