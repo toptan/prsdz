@@ -2,6 +2,7 @@
 #define _SIMULATOR_H_
 
 #include <vector>
+#include <statistics.h>
 
 // Forward declarations
 class device;
@@ -31,6 +32,11 @@ class simulator {
     /// \brief Štampa rezultate simulacije.
     void print_results() const;
 
+    /// \brief Sračunava potrebne vrednosti.
+    ///
+    /// \return Struktura sa potrebnim vrednostima.
+    statistics calculate_statistics() const;
+
   private:
     wait_queue *queue_cpu;  //!< Red za čekanje procesora.
     wait_queue *queue_sys;  //!< Red za čekanje sistemskih diskova.
@@ -42,6 +48,8 @@ class simulator {
     processing_device *sys0;  //!< Prvi sistemski disk.
     processing_device *sys1;  //!< Drugi sistemski disk.
 
+    std::vector<processing_device *> cpus;        //!< Procesori;
+    std::vector<processing_device *> sys_discs;   //!< Sistemski diskovi.
     std::vector<processing_device *> user_discs;  //!< Korisnički diskovi.
     std::vector<job *> jobs;                      //!< Poslovi.
     std::vector<device *> processing_devices;     //!< Vektor uređaja koji rade obradu.

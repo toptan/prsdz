@@ -8,7 +8,9 @@
 const uint64_t minut = 6000000l;
 
 simulator::simulator(int number_of_user_discs, int number_of_processes, int simulation_time)
-    : user_discs(),
+    : cpus(),
+      sys_discs(),
+      user_discs(),
       jobs(),
       processing_devices(),
       wait_queues(),
@@ -24,14 +26,18 @@ simulator::simulator(int number_of_user_discs, int number_of_processes, int simu
     cpu1 = new processing_device(8000, "CPU1");
     processing_devices.push_back(cpu0);
     processing_devices.push_back(cpu1);
+    cpus.push_back(cpu0);
+    cpus.push_back(cpu1);
 
-    sys0 = new processing_device(20000, "SYSTEM DISC 0");
-    sys1 = new processing_device(20000, "SYSTEM DISC 1");
+    sys0 = new processing_device(20000, "SYSTEM DISC0");
+    sys1 = new processing_device(20000, "SYSTEM DISC1");
     processing_devices.push_back(sys0);
     processing_devices.push_back(sys1);
+    sys_discs.push_back(sys0);
+    sys_discs.push_back(sys1);
 
     for (auto i = 0; i < number_of_user_discs; i++) {
-        std::string name = "USER DISC ";
+        std::string name = "USER DISC";
         auto user_disc = new processing_device(25000, name + std::to_string(i));
         user_discs.push_back(user_disc);
         processing_devices.push_back(user_disc);
@@ -158,18 +164,153 @@ void simulator::print_stats() const {
     }
 }
 
+// void simulator::print_results() const {
+// long total_time = 0;
+// long cycles = 0;
+// for (const auto job : jobs) {
+// total_time += job->total_time();
+// cycles += job->cycles();
+//}
+// double T = total_time / (cycles * 1000.0);
+// std::cout << std::setprecision(6) << std::fixed;
+
+// std::cout << "Vreme odziva T = " << T << " ms." << std::endl;
+// double cpu_U = 0.0;
+// for (const auto device : processing_devices) {
+// double U = static_cast<double>(device->total_work_time()) / (m_simulation_time * minut);
+// std::cout << "Iskorišćenost " << device->name() << " U = " << U << std::endl;
+//}
+// std::cout << "Prosečna iskorišćenost CPU U = " << cpu_U << std::endl;
+// for (const auto device : processing_devices) {
+// double X = 1000000l *
+//(static_cast<double>(device->total_work_time()) / (m_simulation_time * minut)) /
+// device->avg_processing_time();
+// std::cout << "Protok " << device->name() << " X = " << X << std::endl;
+//}
+// for (const auto device : processing_devices) {
+// double U = static_cast<double>(device->total_work_time()) / (m_simulation_time * minut);
+// std::cout << "Prosečan broj poslova " << device->name()
+//<< " J = " << U * T * 1000.0 / device->avg_processing_time() << std::endl;
+//}
+//}
+
 void simulator::print_results() const {
+    statistics s = calculate_statistics();
+    std::cout << "Rezultati za " << user_discs.size() << " korisničkih diskova i " << jobs.size()
+              << " poslova." << std::endl;
+    std::cout << "CPU 0" << std::endl;
+    std::cout << "\tIskorišćenost        : " << s.U_cpu0 << std::endl;
+    std::cout << "\tProtok               : " << s.X_cpu0 << std::endl;
+    std::cout << "\tProsečan broj poslova: " << s.J_cpu0 << std::endl;
+    std::cout << "CPU 1" << std::endl;
+    std::cout << "\tIskorišćenost        : " << s.U_cpu1 << std::endl;
+    std::cout << "\tProtok               : " << s.X_cpu1 << std::endl;
+    std::cout << "\tProsečan broj poslova: " << s.J_cpu1 << std::endl;
+    std::cout << "CPU proseci" << std::endl;
+    std::cout << "\tIskorišćenost        : " << s.U_cpu_avg << std::endl;
+    std::cout << "\tProtok               : " << s.X_cpu_avg << std::endl;
+    std::cout << "\tProsečan broj poslova: " << s.J_cpu_avg << std::endl;
+
+    std::cout << "Sistemski disk 0" << std::endl;
+    std::cout << "\tIskorišćenost        : " << s.U_sys0 << std::endl;
+    std::cout << "\tProtok               : " << s.X_sys0 << std::endl;
+    std::cout << "\tProsečan broj poslova: " << s.J_sys0 << std::endl;
+    std::cout << "Sistemski disk 1" << std::endl;
+    std::cout << "\tIskorišćenost        : " << s.U_sys1 << std::endl;
+    std::cout << "\tProtok               : " << s.X_sys1 << std::endl;
+    std::cout << "\tProsečan broj poslova: " << s.J_sys1 << std::endl;
+    std::cout << "Sistemski diskovi proseci" << std::endl;
+    std::cout << "\tIskorišćenost        : " << s.U_sys_avg << std::endl;
+    std::cout << "\tProtok               : " << s.X_sys_avg << std::endl;
+    std::cout << "\tProsečan broj poslova: " << s.J_sys_avg << std::endl;
+
+    for (size_t i = 0; i < s.U_usr.size(); i++) {
+        std::cout << "Korisnički disk " << i << std::endl;
+        std::cout << "\tIskorišćenost        : " << s.U_usr[i] << std::endl;
+        std::cout << "\tProtok               : " << s.X_usr[i] << std::endl;
+        std::cout << "\tProsečan broj poslova: " << s.J_usr[i] << std::endl;
+    }
+    std::cout << "Korisnički diskovi proseci" << std::endl;
+    std::cout << "\tIskorišćenost        : " << s.U_usr_avg << std::endl;
+    std::cout << "\tProtok               : " << s.X_usr_avg << std::endl;
+    std::cout << "\tProsečan broj poslova: " << s.J_usr_avg << std::endl;
+
+    std::cout << "Vreme odziva sistema: " << s.T << " ms." << std::endl;
+
+    if (s.U_cpu_avg < s.U_sys_avg && s.U_cpu_avg < s.U_usr_avg) {
+        std::cout << "Kritičan resurs su procesori jer im je iskorišćenje najveće." << std::endl;
+    }
+    if (s.U_sys_avg < s.U_cpu_avg && s.U_sys_avg < s.U_usr_avg) {
+        std::cout << "Kritičan resurs su sistemski diskovi jer im je iskorišćenje najveće."
+                  << std::endl;
+    }
+    if (s.U_usr_avg < s.U_cpu_avg && s.U_usr_avg < s.U_sys_avg) {
+        std::cout << "Kritičan resurs su korisnički diskovi jer im je iskorišćenje najveće."
+                  << std::endl;
+    }
+}
+
+statistics simulator::calculate_statistics() const {
+    statistics s;
     long total_time = 0;
     long cycles = 0;
     for (const auto job : jobs) {
         total_time += job->total_time();
         cycles += job->cycles();
     }
-    std::cout << std::setprecision(6) << std::fixed;
-    std::cout << "Vreme odziva T = " << total_time / (cycles * 1000.0) << " ms." << std::endl;
-    for (const auto device : processing_devices) {
-        std::cout << "Iskorišćenost " << device->name() << " U = "
-                  << static_cast<double>(device->total_work_time()) / (m_simulation_time * minut)
-                  << std::endl;
+    uint64_t sim_time = m_simulation_time * minut;  // Vreme simulacije u mikrosekundama.
+    s.T = total_time / (cycles * 1000.0);
+    // Iskorišćenosti
+    s.U_cpu0 = static_cast<double>(cpu0->total_work_time()) / sim_time;
+    s.U_cpu1 = static_cast<double>(cpu1->total_work_time()) / sim_time;
+    s.U_cpu_avg = (s.U_cpu0 + s.U_cpu1) / 2;
+    s.U_sys0 = static_cast<double>(sys0->total_work_time()) / sim_time;
+    s.U_sys1 = static_cast<double>(sys1->total_work_time()) / sim_time;
+    s.U_sys_avg = (s.U_sys0 + s.U_sys1) / 2;
+    for (auto device : user_discs) {
+        double U = static_cast<double>(device->total_work_time()) / sim_time;
+        s.U_usr.push_back(U);
+        s.U_usr_avg += U;
     }
+    s.U_usr_avg = s.U_usr_avg / user_discs.size();
+
+    // Protok
+    s.X_cpu0 = 1000000l * (static_cast<double>(cpu0->total_work_time()) / sim_time) /
+               cpu0->avg_processing_time();
+    s.X_cpu1 = 1000000l * (static_cast<double>(cpu1->total_work_time()) / sim_time) /
+               cpu1->avg_processing_time();
+    s.X_cpu_avg = (s.X_cpu0 + s.X_cpu1) / 2;
+    s.X_sys0 = 1000000l * (static_cast<double>(sys0->total_work_time()) / sim_time) /
+               cpu0->avg_processing_time();
+    s.X_sys1 = 1000000l * (static_cast<double>(sys1->total_work_time()) / sim_time) /
+               cpu1->avg_processing_time();
+    s.X_sys_avg = (s.X_sys0 + s.X_sys1) / 2;
+    for (auto device : user_discs) {
+        double X = 1000000l * (static_cast<double>(device->total_work_time()) / sim_time) /
+                   device->avg_processing_time();
+        s.X_usr.push_back(X);
+        s.X_usr_avg += X;
+    }
+    s.X_usr_avg = s.X_usr_avg / user_discs.size();
+
+    // Prosečan broj poslova
+    s.J_cpu0 = 1000.0 * s.T * (static_cast<double>(cpu0->total_work_time()) / sim_time) /
+               cpu0->avg_processing_time();
+    s.J_cpu1 = 1000.0 * s.T * (static_cast<double>(cpu1->total_work_time()) / sim_time) /
+               cpu1->avg_processing_time();
+    s.J_cpu_avg = (s.J_cpu0 + s.J_cpu1) / 2;
+    s.J_sys0 = 1000.0 * s.T * (static_cast<double>(sys0->total_work_time()) / sim_time) /
+               sys0->avg_processing_time();
+    s.J_sys1 = 1000.0 * s.T * (static_cast<double>(sys1->total_work_time()) / sim_time) /
+               sys1->avg_processing_time();
+    s.J_sys_avg = (s.J_sys0 + s.J_sys1) / 2;
+    for (auto device : user_discs) {
+        double J = 1000.0 * s.T * (static_cast<double>(sys1->total_work_time()) / sim_time) /
+                   device->avg_processing_time();
+        s.J_usr.push_back(J);
+        s.J_usr_avg += J;
+    }
+    s.J_usr_avg = s.J_usr_avg / user_discs.size();
+
+    return s;
 }

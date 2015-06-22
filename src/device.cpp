@@ -15,6 +15,8 @@ device::~device() {}
 
 long device::processing_time() const { return m_processing_time; }
 
+long device::avg_processing_time() const { return m_avg_processing_time; }
+
 std::string device::name() const { return m_name; }
 
 void device::add_next_device(double probability, device *next_device) {
