@@ -16,6 +16,7 @@ add_definitions("-Wmissing-braces -Wnon-virtual-dtor -Wshadow")
 file(GLOB PROJECT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 add_executable(ttdzprs ${PROJECT_SOURCES})
 include_directories(ttdzprs ${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(ttdzprs ${Boost_INCLUDE_DIRS})
 target_link_libraries(ttdzprs ${Boost_LIBRARIES})
 
 

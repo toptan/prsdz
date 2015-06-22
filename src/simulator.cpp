@@ -121,7 +121,6 @@ void simulator::start() {
     while (elapsed < simulation_time) {
         elapsed += step();
     }
-    print_results();
 }
 
 long simulator::step() {
@@ -163,36 +162,6 @@ void simulator::print_stats() const {
         std::cout << job->to_string();
     }
 }
-
-// void simulator::print_results() const {
-// long total_time = 0;
-// long cycles = 0;
-// for (const auto job : jobs) {
-// total_time += job->total_time();
-// cycles += job->cycles();
-//}
-// double T = total_time / (cycles * 1000.0);
-// std::cout << std::setprecision(6) << std::fixed;
-
-// std::cout << "Vreme odziva T = " << T << " ms." << std::endl;
-// double cpu_U = 0.0;
-// for (const auto device : processing_devices) {
-// double U = static_cast<double>(device->total_work_time()) / (m_simulation_time * minut);
-// std::cout << "Iskorišćenost " << device->name() << " U = " << U << std::endl;
-//}
-// std::cout << "Prosečna iskorišćenost CPU U = " << cpu_U << std::endl;
-// for (const auto device : processing_devices) {
-// double X = 1000000l *
-//(static_cast<double>(device->total_work_time()) / (m_simulation_time * minut)) /
-// device->avg_processing_time();
-// std::cout << "Protok " << device->name() << " X = " << X << std::endl;
-//}
-// for (const auto device : processing_devices) {
-// double U = static_cast<double>(device->total_work_time()) / (m_simulation_time * minut);
-// std::cout << "Prosečan broj poslova " << device->name()
-//<< " J = " << U * T * 1000.0 / device->avg_processing_time() << std::endl;
-//}
-//}
 
 void simulator::print_results() const {
     statistics s = calculate_statistics();
@@ -237,14 +206,14 @@ void simulator::print_results() const {
 
     std::cout << "Vreme odziva sistema: " << s.T << " ms." << std::endl;
 
-    if (s.U_cpu_avg < s.U_sys_avg && s.U_cpu_avg < s.U_usr_avg) {
+    if (s.U_cpu_avg > s.U_sys_avg && s.U_cpu_avg > s.U_usr_avg) {
         std::cout << "Kritičan resurs su procesori jer im je iskorišćenje najveće." << std::endl;
     }
-    if (s.U_sys_avg < s.U_cpu_avg && s.U_sys_avg < s.U_usr_avg) {
+    if (s.U_sys_avg > s.U_cpu_avg && s.U_sys_avg > s.U_usr_avg) {
         std::cout << "Kritičan resurs su sistemski diskovi jer im je iskorišćenje najveće."
                   << std::endl;
     }
-    if (s.U_usr_avg < s.U_cpu_avg && s.U_usr_avg < s.U_sys_avg) {
+    if (s.U_usr_avg > s.U_cpu_avg && s.U_usr_avg > s.U_sys_avg) {
         std::cout << "Kritičan resurs su korisnički diskovi jer im je iskorišćenje najveće."
                   << std::endl;
     }
