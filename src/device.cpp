@@ -7,7 +7,8 @@ device::device(long avg_processing_time, const std::string &name)
       m_name(name),
       m_processing_time(0),
       m_next_devices(),
-      m_probabilities() {}
+      m_probabilities(),
+      m_ranges() {}
 
 device::~device() {}
 
@@ -25,6 +26,7 @@ void device::add_next_device(double probability, device *next_device) {
     }
     m_next_devices.push_back(next_device);
     m_probabilities.push_back(probability);
+    m_ranges.emplace_back(temp, temp + probability, next_device);
 }
 
 void device::check_consistency() {

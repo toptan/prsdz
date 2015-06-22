@@ -1,6 +1,7 @@
 #ifndef _DEVICE_H_
 #define _DEVICE_H_
 
+#include <probability_range.hpp>
 #include <string>
 #include <vector>
 
@@ -71,8 +72,9 @@ class device {
     std::string m_name;                //!< Naziv uređaja.
     long m_processing_time;            //!< Preostalo vreme obrade tekućeg posla u mikrosekundama.
 
-    std::vector<device *> m_next_devices;  //!< Sledeći uređaji u lancu.
-    std::vector<double> m_probabilities;   //!< Verovatnoće prelaska u sledeći uređaj.
+    std::vector<device *> m_next_devices;     //!< Sledeći uređaji u lancu.
+    std::vector<double> m_probabilities;      //!< Verovatnoće prelaska u sledeći uređaj.
+    std::vector<probability_range> m_ranges;  //!< Sadrži opsege vrednost prelaska u sledeći uređaj.
 };
 
 #endif  // _DEVICE_H_

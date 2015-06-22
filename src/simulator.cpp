@@ -1,26 +1,39 @@
+#include <iostream>
 #include <job.h>
 #include <processing_device.h>
 #include <simulator.h>
 #include <wait_queue.h>
 
-simulator::simulator(int number_of_user_discs, int numuber_of_processes) : user_discs() {
+const uint64_t minut = 60000000;
+
+simulator::simulator(int number_of_user_discs, int number_of_processes)
+    : user_discs(), jobs(), processing_devices(), wait_queues() {
     queue_cpu = new wait_queue("CPU QUEUE");
     queue_sys = new wait_queue("SYSTEM DISCS QUEUE");
     queue_usr = new wait_queue("USER DISCS QUEUE");
+    wait_queues.push_back(queue_cpu);
+    wait_queues.push_back(queue_sys);
+    wait_queues.push_back(queue_usr);
 
     cpu0 = new processing_device(8000, "CPU0");
     cpu1 = new processing_device(8000, "CPU1");
+    processing_devices.push_back(cpu0);
+    processing_devices.push_back(cpu1);
 
     sys0 = new processing_device(20000, "SYSTEM DISC 0");
     sys1 = new processing_device(20000, "SYSTEM DISC 1");
+    processing_devices.push_back(sys0);
+    processing_devices.push_back(sys1);
 
     for (auto i = 0; i < number_of_user_discs; i++) {
         std::string name = "USER DISC ";
-        user_discs.push_back(new processing_device(25000, name + std::to_string(i)));
+        auto user_disc = new processing_device(25000, name + std::to_string(i));
+        user_discs.push_back(user_disc);
+        processing_devices.push_back(user_disc);
     }
 
     queue_cpu->add_next_device(0.5, cpu0);
-    queue_cpu->add_next_device(0.5, cpu0);
+    queue_cpu->add_next_device(0.5, cpu1);
 
     cpu0->add_next_device(0.1, queue_cpu);
     cpu0->add_next_device(0.2, queue_sys);
@@ -51,8 +64,15 @@ simulator::simulator(int number_of_user_discs, int numuber_of_processes) : user_
     cpu1->check_consistency();
     sys0->check_consistency();
     sys1->check_consistency();
-    for (const auto &user_disc: user_discs) {
+    for (const auto &user_disc : user_discs) {
         user_disc->check_consistency();
+    }
+
+    for (auto i = 0; i < number_of_processes; i++) {
+        std::string name = "JOB " + std::to_string(i);
+        job *new_job = new job(name);
+        jobs.push_back(new_job);
+        queue_cpu->add_job(new_job);
     }
 }
 
@@ -71,5 +91,62 @@ simulator::~simulator() {
         auto user_disc = user_discs.back();
         user_discs.pop_back();
         delete user_disc;
+    }
+
+    while (!jobs.empty()) {
+        auto job = jobs.back();
+        jobs.pop_back();
+        delete job;
+    }
+}
+
+void simulator::start() {
+    uint64_t max_time =  24 * 60 * minut;  // 1 dan.
+    uint64_t elapsed = 0;
+    queue_cpu->move_jobs();
+    print_stats();
+    while (elapsed < max_time) {
+        elapsed += step();
+        //std::cout << elapsed << " of " << max_time << std::endl;
+    }
+    print_stats();
+}
+
+long simulator::step() {
+    long jump = min_time_jump();
+    for (auto device : processing_devices) {
+        device->time_jump(jump);
+    }
+    for (auto wait_queue : wait_queues) {
+        wait_queue->move_jobs();
+    }
+
+    return jump;
+}
+
+long simulator::min_time_jump() const {
+    long minimum = 0;
+    std::vector<device *>::size_type i;
+
+    for (i = 0; i < processing_devices.size(); i++) {
+        if (processing_devices[i]->full()) {
+            minimum = processing_devices[i]->processing_time();
+            break;
+        }
+    }
+
+    for (; i < processing_devices.size(); i++) {
+        if (processing_devices[i]->full() && processing_devices[i]->processing_time() < minimum) {
+            minimum = processing_devices[i]->processing_time();
+        }
+    }
+
+    return minimum;
+}
+
+void simulator::print_stats() const {
+    std::cout << "TRENUTNO STANJE U SIMULATORU" << std::endl;
+    for (const auto job : jobs) {
+        std::cout << job->to_string();
     }
 }

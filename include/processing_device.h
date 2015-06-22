@@ -1,6 +1,7 @@
 #ifndef _PROCESSING_DEVICE_H_
 #define _PROCESSING_DEVICE_H_
 
+#include <device.h>
 #include <string>
 
 // Forward declarations.

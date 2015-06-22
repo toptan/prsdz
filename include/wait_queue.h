@@ -42,9 +42,17 @@ class wait_queue : public device {
     /// \copydoc device::time_jump(long)
     virtual void time_jump(long amount) override;
 
+    /// \brief Šalje poslove na uređaje ako mogu da ih prihvate.
+    void move_jobs();
+
   protected:
     /// \brief Ovaj metod ne radi ništa pošto u redu nema obrade.
     virtual void generate_processing_time() override{};
+
+    /// \brief Proverava da li je bar jedan od narednih uređaja u lancu spreman da prihvati posao.
+    ///
+    /// \return \code true ako je bar jedan od narednih uređaja slobodan.
+    bool next_device_available() const;
 
   private:
     std::deque<job *> m_jobs;  //!< Poslovi koji čekaju u ovom redu.
