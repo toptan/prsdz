@@ -1,0 +1,18 @@
+BJUZEN:
+- procesori x1 = x2 = xc, mi1 = mi2 = mic
+- sistemski diskovi x3 = x4 = xs, mi3 = mi4 = mis
+- korisnički diskovi x5 = x6 = ... = xk = xu, mi5 = mi6 = ... = mik = miu
+
+Verovatnoće:
+p12 = p21 = p11 = p12 = pcc = 0.05 sa CPU na CPU
+p13 = p14 = p23 = p24 = pcs = 0.01 sa CPU na sistemski disk
+p15 = p16 = p25 = p25 = p1k+5 = p2k+5 = pcu = 0.7/ksa CPU na korisnicki disk
+p31 = p32 = p41 = p42 = psc = 0.2 sa sistemkog diska na CPU
+p35 = p36 = p45 = p46 = p3k+5 = p4k+5 = psu = 0.6/k sa sistemsko na korisnički disk
+p51 = p52 = p61 = p62 = pk+51 = pk+52 = puc = 0.5 sa korisničkog diska na CPU
+sve ostale verovatnoće su nula ili pij = 0; i, j > 4
+
+xs = 2 * pcs * (mic / mis) * xc
+xu = (mic/miu) * ((1 - 2 * pcc - 4 * psc * pcs) / ( k * puc)) * xc
+
+
