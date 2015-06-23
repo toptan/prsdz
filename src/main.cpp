@@ -9,12 +9,13 @@ namespace po = boost::program_options;
 /// \brief Struktura koja mapira opcije iz komandne linije.
 struct options {
     options() : simulation_time(1440), processes(5), discs(2), buzen(false), run_all(false) {}
-    int simulation_time;  //!< Vreme simulacije u minutima.
-    int processes;        //!< Broj procesa.
-    int discs;            //!< Broj korisničkih diskova.
-    bool buzen;           //!< Startuj Bjuzenov analitički metod.
-    bool run_all;         //!< Uradi sve prema postavci zadatka.
-    std::string file;     //!< Izlazni fajl za rezultate ako se izvršava sve po postavci zadatka.
+    int simulation_time;   //!< Vreme simulacije u minutima.
+    int processes;         //!< Broj procesa.
+    int discs;             //!< Broj korisničkih diskova.
+    bool buzen;            //!< Startuj Bjuzenov analitički metod.
+    bool run_all;          //!< Uradi sve prema postavci zadatka.
+    std::string sim_file;  //!< Izlazni fajl za rezultate simulacije.
+    std::string buz_file;  //!< Izlazni fajl za rezultate Bjuzenovog metoda
 };
 
 int main(int argc, char *argv[]) {
@@ -28,7 +29,8 @@ int main(int argc, char *argv[]) {
         ("discs", po::value<int>(&o.discs)->default_value(2), "Broj korisničkih diskova.")
         ("buzen", po::value<bool>(&o.buzen)->default_value(false), "Startuj Bjuzenov analitički metod umesto simulacije.")
         ("run-all", po::value<bool>(&o.run_all)->default_value(false), "Pokreni sva izvršavanja prema postavci zadatka.")
-        ("file", po::value<std::string>(&o.file)->default_value(""), "Izlazni fajl za rezultate ako se izvršava sve po postavci zadatka.");
+        ("sim-file", po::value<std::string>(&o.sim_file)->default_value(""), "Izlazni fajl za rezultate ako se izvršava sve po postavci zadatka.")
+        ("buz-file", po::value<std::string>(&o.buz_file)->default_value(""), "Izlazni fajl za rezultate Bjuzenovog metoda ako se izvršava sve po postavci zadatka.");
     // clang-format on
 
     po::variables_map vmap;
