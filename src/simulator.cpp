@@ -112,8 +112,9 @@ simulator::~simulator() {
 }
 
 void simulator::start() {
-    std::cout << "Pokrećem simulaciju u trajanju od " << m_simulation_time << " minuta."
-              << std::endl;
+    std::cout << "Pokrećem simulaciju u trajanju od " << m_simulation_time
+              << " minuta. Broj diskova je " << user_discs.size() << ", broj procesa je "
+              << jobs.size() << "." << std::endl;
 
     uint64_t simulation_time = m_simulation_time * minut;
     uint64_t elapsed = 0;
@@ -193,7 +194,7 @@ void simulator::print_results(std::ostream &out) const {
     out << "\tProtok               : " << s.X_sys_avg << std::endl;
     out << "\tProsečan broj poslova: " << s.J_sys_avg << std::endl;
 
-    for (size_t i = 0; i < s.U_usr.size(); i++) {
+    for (auto i = 0u; i < s.U_usr.size(); i++) {
         out << "Korisnički disk " << i << std::endl;
         out << "\tIskorišćenost        : " << s.U_usr[i] << std::endl;
         out << "\tProtok               : " << s.X_usr[i] << std::endl;

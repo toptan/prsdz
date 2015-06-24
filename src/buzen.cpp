@@ -7,8 +7,8 @@ buzen::buzen(int number_of_discs, int number_of_processes)
       m_number_of_processes(number_of_processes),
       x(),
       s(),
-      G(),
-      J(m_number_of_discs + 4, 0.0),
+      G(number_of_processes + 1, 0.0),
+      J(number_of_discs + 4, 0.0),
       U(),
       pcc(0.05),
       pcs(0.1),
@@ -16,6 +16,8 @@ buzen::buzen(int number_of_discs, int number_of_processes)
       psc(0.2),
       psu(0.6 / number_of_discs),
       puc(0.5) {
+    (void)pcu;
+    (void)psu;
     s.push_back(0.008);
     s.push_back(0.008);
     s.push_back(0.02);
@@ -28,14 +30,12 @@ buzen::buzen(int number_of_discs, int number_of_processes)
     double xs = 2 * pcs * (s[2] / s[0]) * 1.0;
     x.push_back(xs);
     x.push_back(xs);
-    double xu = (s[4] / s[0]) * ((1 - 2 * pcc - 4 * psc * pcs) / (m_number_of_discs * puc)) * 1.0;
+    double xu =
+        (s[4] / s[0]) * ((1 - 2 * pcc - 4 * psc * pcs) / (2 * m_number_of_discs * puc)) * 1.0;
     for (auto i = 0; i < m_number_of_discs; i++) {
         x.push_back(xu);
     }
-    G.push_back(1.0);
-    for (auto i = 1; i <= m_number_of_processes; i++) {
-        G.push_back(0.0);
-    }
+    G[0] = 1.0;
     for (auto j = 0; j < m_number_of_discs; j++) {
         for (auto i = 1; i <= m_number_of_processes; i++) {
             G[i] = G[i] + x[j] * G[i - 1];
@@ -53,9 +53,10 @@ buzen::buzen(int number_of_discs, int number_of_processes)
     for (auto i = 0u; i < s.size(); i++) {
         X.push_back(U[i] / s[i]);
     }
-    for (auto j = 1; j < m_number_of_processes; j++) {
-        for (auto i = 0u; i < J.size(); i++) {
-            J[i] = J[i] + (G[m_number_of_processes - j] / G[m_number_of_processes]) * pow(x[i], j);
+    for (auto i = 0u; i < J.size(); i++) {
+        for (auto j = 1; j < m_number_of_processes; j++) {
+            J[i] =
+                J[i] + ((G[m_number_of_processes - j] / G[m_number_of_processes]) * pow(x[i], j));
         }
     }
 }
@@ -92,7 +93,7 @@ void buzen::print_results(std::ostream &out) const {
     out << "\tProtok               : " << o.X_sys_avg << std::endl;
     out << "\tProsečan broj poslova: " << o.J_sys_avg << std::endl;
 
-    for (size_t i = 0; i < o.U_usr.size(); i++) {
+    for (auto i = 0u; i < o.U_usr.size(); i++) {
         out << "Korisnički disk " << i << std::endl;
         out << "\tIskorišćenost        : " << o.U_usr[i] << std::endl;
         out << "\tProtok               : " << o.X_usr[i] << std::endl;
@@ -152,9 +153,9 @@ statistics buzen::calculate_results() const {
     o.J_sys0 = J[2];
     o.J_sys1 = J[3];
     o.J_sys_avg = (o.J_sys0 + o.J_sys1) / 2;
-    for (auto i = 4u; i < X.size(); i++) {
-        o.J_usr.push_back(X[i]);
-        o.J_usr_avg += X[i];
+    for (auto i = 4u; i < J.size(); i++) {
+        o.J_usr.push_back(J[i]);
+        o.J_usr_avg += J[i];
     }
     o.J_usr_avg = o.J_usr_avg / m_number_of_discs;
     o.T = J[0] * s[0] * 1000.0 / U[0];
