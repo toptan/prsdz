@@ -12,14 +12,14 @@ class wait_queue : public device {
   public:
     /// \brief Konstruktor.
     ///
-    /// \param name naziv reda za čekanje.
-    explicit wait_queue(const std::string &name);
+    /// \param device_name naziv reda za čekanje.
+    explicit wait_queue(const std::string &device_name);
 
     /// \brief Konstruktor.
     ///
-    /// \param name naziv reda za čekanje.
+    /// \param device_name naziv reda za čekanje.
     /// \param jobs inicijalni skup poslova.
-    explicit wait_queue(const std::string &name, const std::deque<job *> &jobs);
+    explicit wait_queue(const std::string &device_name, const std::deque<job *> &jobs);
 
     /// \brief Destruktor.
     virtual ~wait_queue();

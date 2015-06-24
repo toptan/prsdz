@@ -13,9 +13,9 @@ class device {
   public:
     /// \brief Konstruktor.
     ///
-    /// \param avg_processing_time prosečno vreme obrade u mikrosekundama.
-    /// \param name naziv uređaja.
-    explicit device(long avg_processing_time, const std::string &name);
+    /// \param average_processing_time prosečno vreme obrade u mikrosekundama.
+    /// \param device_name naziv uređaja.
+    explicit device(long average_processing_time, const std::string &device_name);
 
     /// \brief Destruktor.
     virtual ~device();

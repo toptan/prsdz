@@ -1,10 +1,11 @@
 #include <device.h>
 #include <exception>
 #include <numeric>
+#include <stdexcept>
 
-device::device(long avg_processing_time, const std::string &name)
-    : m_avg_processing_time(avg_processing_time),
-      m_name(name),
+device::device(long average_processing_time, const std::string &device_name)
+    : m_avg_processing_time(average_processing_time),
+      m_name(device_name),
       m_processing_time(0),
       m_total_work_time(0),
       m_next_devices(),

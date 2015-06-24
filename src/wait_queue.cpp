@@ -3,10 +3,10 @@
 #include <wait_queue.h>
 #include <iostream>
 
-wait_queue::wait_queue(const std::string &name) : device(0, name), m_jobs() {}
+wait_queue::wait_queue(const std::string &device_name) : device(0, device_name), m_jobs() {}
 
-wait_queue::wait_queue(const std::string &name, const std::deque<job *> &jobs)
-    : device(0, name), m_jobs(jobs) {}
+wait_queue::wait_queue(const std::string &device_name, const std::deque<job *> &jobs)
+    : device(0, device_name), m_jobs(jobs) {}
 
 wait_queue::~wait_queue() {}
 

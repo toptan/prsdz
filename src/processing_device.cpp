@@ -1,10 +1,11 @@
 #include <cstdlib>
+#include <stdexcept>
 #include <exception>
 #include <job.h>
 #include <processing_device.h>
 
-processing_device::processing_device(long avg_processing_time, const std::string &name)
-    : device(avg_processing_time, name), m_job(nullptr) {}
+processing_device::processing_device(long average_processing_time, const std::string &device_name)
+    : device(average_processing_time, device_name), m_job(nullptr) {}
 
 processing_device::~processing_device() {}
 

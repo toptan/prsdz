@@ -12,9 +12,9 @@ class processing_device : public device {
   public:
     /// \brief Konstruktor.
     ///
-    /// \param avg_processing_time prosečno vreme obrade u mikrosekundama.
-    /// \param name naziv uređaja.
-    explicit processing_device(long avg_processing_time, const std::string &name);
+    /// \param average_processing_time prosečno vreme obrade u mikrosekundama.
+    /// \param device_name naziv uređaja.
+    explicit processing_device(long average_processing_time, const std::string &device_name);
 
     /// \brief Destruktor.
     virtual ~processing_device();
