@@ -1,8 +1,8 @@
 #ifndef _SIMULATOR_H_
 #define _SIMULATOR_H_
 
-#include <vector>
 #include <statistics.h>
+#include <vector>
 
 // Forward declarations
 class device;

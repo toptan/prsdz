@@ -1,7 +1,8 @@
-#include <iostream>
-#include <cstdlib>
-#include <chrono>
 #include <boost/program_options.hpp>
+#include <buzen.h>
+#include <chrono>
+#include <cstdlib>
+#include <iostream>
 #include <simulator.h>
 
 namespace po = boost::program_options;
@@ -44,6 +45,8 @@ int main(int argc, char *argv[]) {
     if (!o.run_all) {
         if (o.buzen) {
             std::cout << "Bjuzenova analitička metoda" << std::endl;
+            buzen b(o.discs, o.processes);
+            b.print_results();
         } else {
             simulator s(o.discs, o.processes, o.simulation_time);
             s.start();
