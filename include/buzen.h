@@ -1,6 +1,7 @@
 #ifndef _BUZEN_H_
 #define _BUZEN_H_
 
+#include <ostream>
 #include <statistics.h>
 #include <vector>
 
@@ -17,7 +18,14 @@ class buzen {
     virtual ~buzen();
 
     /// \brief Štampa rezultate simulacije.
-    void print_results() const;
+    ///
+    /// \param out Izlazni stream.
+    void print_results(std::ostream &out) const;
+
+    /// \brief Kreira strukturu sa potrebnim vrednostima.
+    ///
+    /// \return Struktura sa potrebnim vrednostima.
+    statistics calculate_results() const;
 
   private:
     const int m_number_of_discs;      //!< Broj korisničkih diskova.

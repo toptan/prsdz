@@ -1,10 +1,14 @@
 #ifndef _STATISTICS_H_
 #define _STATISTICS_H_
 
+#include <vector>
+
 /// \brief Struktura koja sadrži sve parametre koje je potrebno odrediti.
 struct statistics {
     statistics()
-        : T(0.0),
+        : user_discs(0),
+          processes(0),
+          T(0.0),
           U_cpu0(0.0),
           U_cpu1(0.0),
           U_cpu_avg(0.0),
@@ -29,7 +33,8 @@ struct statistics {
           J_sys_avg(0.0),
           J_usr(),
           J_usr_avg(0.0) {}
-
+    int user_discs;
+    int processes;
     double T;
     double U_cpu0;
     double U_cpu1;

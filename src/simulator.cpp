@@ -163,64 +163,64 @@ void simulator::print_stats() const {
     }
 }
 
-void simulator::print_results() const {
+void simulator::print_results(std::ostream &out) const {
     statistics s = calculate_statistics();
-    std::cout << "Rezultati za " << user_discs.size() << " korisničkih diskova i " << jobs.size()
-              << " poslova." << std::endl;
-    std::cout << "CPU 0" << std::endl;
-    std::cout << "\tIskorišćenost        : " << s.U_cpu0 << std::endl;
-    std::cout << "\tProtok               : " << s.X_cpu0 << std::endl;
-    std::cout << "\tProsečan broj poslova: " << s.J_cpu0 << std::endl;
-    std::cout << "CPU 1" << std::endl;
-    std::cout << "\tIskorišćenost        : " << s.U_cpu1 << std::endl;
-    std::cout << "\tProtok               : " << s.X_cpu1 << std::endl;
-    std::cout << "\tProsečan broj poslova: " << s.J_cpu1 << std::endl;
-    std::cout << "CPU proseci" << std::endl;
-    std::cout << "\tIskorišćenost        : " << s.U_cpu_avg << std::endl;
-    std::cout << "\tProtok               : " << s.X_cpu_avg << std::endl;
-    std::cout << "\tProsečan broj poslova: " << s.J_cpu_avg << std::endl;
+    out << "Rezultati simulacije od " << m_simulation_time << " minuta. Broj korisničkih diskova "
+        << s.user_discs << ", broj procesa " << s.processes << "." << std::endl;
+    out << "CPU 0" << std::endl;
+    out << "\tIskorišćenost        : " << s.U_cpu0 << std::endl;
+    out << "\tProtok               : " << s.X_cpu0 << std::endl;
+    out << "\tProsečan broj poslova: " << s.J_cpu0 << std::endl;
+    out << "CPU 1" << std::endl;
+    out << "\tIskorišćenost        : " << s.U_cpu1 << std::endl;
+    out << "\tProtok               : " << s.X_cpu1 << std::endl;
+    out << "\tProsečan broj poslova: " << s.J_cpu1 << std::endl;
+    out << "CPU proseci" << std::endl;
+    out << "\tIskorišćenost        : " << s.U_cpu_avg << std::endl;
+    out << "\tProtok               : " << s.X_cpu_avg << std::endl;
+    out << "\tProsečan broj poslova: " << s.J_cpu_avg << std::endl;
 
-    std::cout << "Sistemski disk 0" << std::endl;
-    std::cout << "\tIskorišćenost        : " << s.U_sys0 << std::endl;
-    std::cout << "\tProtok               : " << s.X_sys0 << std::endl;
-    std::cout << "\tProsečan broj poslova: " << s.J_sys0 << std::endl;
-    std::cout << "Sistemski disk 1" << std::endl;
-    std::cout << "\tIskorišćenost        : " << s.U_sys1 << std::endl;
-    std::cout << "\tProtok               : " << s.X_sys1 << std::endl;
-    std::cout << "\tProsečan broj poslova: " << s.J_sys1 << std::endl;
-    std::cout << "Sistemski diskovi proseci" << std::endl;
-    std::cout << "\tIskorišćenost        : " << s.U_sys_avg << std::endl;
-    std::cout << "\tProtok               : " << s.X_sys_avg << std::endl;
-    std::cout << "\tProsečan broj poslova: " << s.J_sys_avg << std::endl;
+    out << "Sistemski disk 0" << std::endl;
+    out << "\tIskorišćenost        : " << s.U_sys0 << std::endl;
+    out << "\tProtok               : " << s.X_sys0 << std::endl;
+    out << "\tProsečan broj poslova: " << s.J_sys0 << std::endl;
+    out << "Sistemski disk 1" << std::endl;
+    out << "\tIskorišćenost        : " << s.U_sys1 << std::endl;
+    out << "\tProtok               : " << s.X_sys1 << std::endl;
+    out << "\tProsečan broj poslova: " << s.J_sys1 << std::endl;
+    out << "Sistemski diskovi proseci" << std::endl;
+    out << "\tIskorišćenost        : " << s.U_sys_avg << std::endl;
+    out << "\tProtok               : " << s.X_sys_avg << std::endl;
+    out << "\tProsečan broj poslova: " << s.J_sys_avg << std::endl;
 
     for (size_t i = 0; i < s.U_usr.size(); i++) {
-        std::cout << "Korisnički disk " << i << std::endl;
-        std::cout << "\tIskorišćenost        : " << s.U_usr[i] << std::endl;
-        std::cout << "\tProtok               : " << s.X_usr[i] << std::endl;
-        std::cout << "\tProsečan broj poslova: " << s.J_usr[i] << std::endl;
+        out << "Korisnički disk " << i << std::endl;
+        out << "\tIskorišćenost        : " << s.U_usr[i] << std::endl;
+        out << "\tProtok               : " << s.X_usr[i] << std::endl;
+        out << "\tProsečan broj poslova: " << s.J_usr[i] << std::endl;
     }
-    std::cout << "Korisnički diskovi proseci" << std::endl;
-    std::cout << "\tIskorišćenost        : " << s.U_usr_avg << std::endl;
-    std::cout << "\tProtok               : " << s.X_usr_avg << std::endl;
-    std::cout << "\tProsečan broj poslova: " << s.J_usr_avg << std::endl;
+    out << "Korisnički diskovi proseci" << std::endl;
+    out << "\tIskorišćenost        : " << s.U_usr_avg << std::endl;
+    out << "\tProtok               : " << s.X_usr_avg << std::endl;
+    out << "\tProsečan broj poslova: " << s.J_usr_avg << std::endl;
 
-    std::cout << "Vreme odziva sistema: " << s.T << " ms." << std::endl;
+    out << "Vreme odziva sistema: " << s.T << " ms." << std::endl;
 
     if (s.U_cpu_avg > s.U_sys_avg && s.U_cpu_avg > s.U_usr_avg) {
-        std::cout << "Kritičan resurs su procesori jer im je iskorišćenje najveće." << std::endl;
+        out << "Kritičan resurs su procesori jer im je iskorišćenje najveće." << std::endl;
     }
     if (s.U_sys_avg > s.U_cpu_avg && s.U_sys_avg > s.U_usr_avg) {
-        std::cout << "Kritičan resurs su sistemski diskovi jer im je iskorišćenje najveće."
-                  << std::endl;
+        out << "Kritičan resurs su sistemski diskovi jer im je iskorišćenje najveće." << std::endl;
     }
     if (s.U_usr_avg > s.U_cpu_avg && s.U_usr_avg > s.U_sys_avg) {
-        std::cout << "Kritičan resurs su korisnički diskovi jer im je iskorišćenje najveće."
-                  << std::endl;
+        out << "Kritičan resurs su korisnički diskovi jer im je iskorišćenje najveće." << std::endl;
     }
 }
 
 statistics simulator::calculate_statistics() const {
     statistics s;
+    s.user_discs = user_discs.size();
+    s.processes = jobs.size();
     long total_time = 0;
     long cycles = 0;
     for (const auto job : jobs) {

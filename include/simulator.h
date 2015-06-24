@@ -1,6 +1,7 @@
 #ifndef _SIMULATOR_H_
 #define _SIMULATOR_H_
 
+#include <ostream>
 #include <statistics.h>
 #include <vector>
 
@@ -30,7 +31,9 @@ class simulator {
     void print_stats() const;
 
     /// \brief Štampa rezultate simulacije.
-    void print_results() const;
+    ///
+    /// \param Izlazni stream.
+    void print_results(std::ostream &out) const;
 
     /// \brief Sračunava potrebne vrednosti.
     ///
